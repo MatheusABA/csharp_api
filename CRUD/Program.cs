@@ -1,7 +1,17 @@
+using CRUD.Data;
+using CRUD.Routes;
+using Microsoft.EntityFrameworkCore;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen();       // Swagger Documentation
+builder.Services.AddDbContext<PersonContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("PostgresString");
+    options.UseNpgsql(connectionString);
+});    // Database Connection Context
 
 var app = builder.Build();
 
@@ -12,8 +22,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/ola", () => "Hello World!");
+// Routes
+app.PersonRoutes();
 
+
+// Running the app
 app.UseHttpsRedirection();
-
 app.Run();
